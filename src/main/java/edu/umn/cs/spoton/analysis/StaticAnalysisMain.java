@@ -22,8 +22,8 @@ public class StaticAnalysisMain {
       //TODO: THESE TYPES NEEDS TO BE GENERALIZED IN WALA
       Arrays.asList("I", "Z", "null", "D", "J", "TA", "TE"));
   /**
-   *   restricts the analysis to walk only the methods that exists in the user's code. Otherwise, it can go to libraries that are not restricted such as
-   *   the java.util.
+   * restricts the analysis to walk only the methods that exists in the user's code. Otherwise, it
+   * can go to libraries that are not restricted such as the java.util.
    */
   public static HashSet<String> disregardedJavaTypes = new HashSet<>(
       Arrays.asList("Ljava/lang/", "[Ljava/lang/"));
@@ -36,7 +36,7 @@ public class StaticAnalysisMain {
    * the main method that we need to start the analysis from, sometimes we need to make a fake main
    * to run the serverless lambda
    */
-  public String fakeMain;
+  public String analysisMainMethod;
   /**
    * the entry class of the program we want to analyze
    */
@@ -53,6 +53,8 @@ public class StaticAnalysisMain {
   /**
    * directory of the output
    */
+  String outputDirName = "analysisOutput";
+
   File outputDir = null;
   /**
    * the file where the stringConstantTable is going to be dumped
@@ -128,8 +130,8 @@ public class StaticAnalysisMain {
     dependencyPackage = args[1];
     dependencyEntryClass = args[2];
     jarClasspath = args[3];
-    fakeMain = args[4];
-    outputDir = new File(args[5]);
+    analysisMainMethod = args[4];
+    outputDir = new File(args[5] + "/analysisOutput");
   }
 
   /**
@@ -141,7 +143,7 @@ public class StaticAnalysisMain {
     GraphsConstruction graphsConstruction = new GraphsConstruction(computeInfluencingTypes);
     List<Object> result = graphsConstruction.runAnalysisPasses(
         dependencyEntryClass,
-        fakeMain,
+        analysisMainMethod,
         jarClasspath, dependencyPackage);
 
     assert result.size() == 2 && result.get(0) instanceof HashMap && result.get(
