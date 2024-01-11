@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="StaticAnalysisMain" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="edu.umn.cs.spoton.analysis.StaticAnalysisMain" />
+    <module name="static-analysis" />
+    <option name="PROGRAM_PARAMETERS" value="true de/dengpeng/projects de.dengpeng.projects.LambdaFunctionHandler $PROJECT_DIR$/../../eval-projects/part2/projects/aws-s3-lambda-dynamodb-csv-loader_2/target/aws-s3-lambda-dynamodb-csv-loader-0.0.1-SNAPSHOT.jar fakeMain()V; $PROJECT_DIR$/output" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="edu.umn.cs.spoton.analysis.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+      <option name="credential" />
+      <option name="region" />
+      <option name="useCurrentConnection" value="false" />
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
