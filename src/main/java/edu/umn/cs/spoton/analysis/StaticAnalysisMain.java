@@ -53,15 +53,11 @@ public class StaticAnalysisMain {
   /**
    * directory of the output
    */
-  String outputDirName = "analysisOutput";
-
   File outputDir = null;
   /**
    * the file where the stringConstantTable is going to be dumped
    */
   File stringConstantsFile;
-  //  for each sourceCodePoint we will find a file that contains the details about the influencing types and depths
-  File sourceCodePointsInfoDir;
 
   /*
   main datastructure carrying the influencing types of sourcecode points
@@ -86,8 +82,11 @@ public class StaticAnalysisMain {
       IOUtil.appendLineToFile(stringConstantsFile, constStr);
     ArrayList<Entry<SourceCodePoint, Map<String, Integer>>> scpEntries = new ArrayList<>(
         sourcePointsToTypesMap.entrySet());
+    System.out.println("about to print scpEntries");
+    System.out.println("outputDir = " + outputDir);
+    System.out.println("scpEntries.length = " + scpEntries.size());
     for (int i = 0; i < scpEntries.size(); i++) {
-      File singleScpInfoFile = new File(sourceCodePointsInfoDir, "scp_" + i + ".txt");
+      File singleScpInfoFile = new File(outputDir, "scp_" + i + ".txt");
       dumpScpToFile(scpEntries.get(i), singleScpInfoFile);
     }
   }
@@ -111,11 +110,11 @@ public class StaticAnalysisMain {
   public StaticAnalysisMain(String[] args) throws IOException {
     parseInput(args);
     stringConstantsFile = new File(outputDir, "StrConstants.txt");
-    sourceCodePointsInfoDir = new File(outputDir, "SourceCodePointsInfo");
+//    sourceCodePointsInfoDir = new File(outputDir, "SourceCodePointsInfo");
     if (outputDir.exists()) {}
     IOUtil.deleteFile(outputDir);
     IOUtil.createDirectory(outputDir);
-    sourceCodePointsInfoDir.mkdirs();
+//    sourceCodePointsInfoDir.mkdirs();
   }
 
   private void parseInput(String[] args) {
