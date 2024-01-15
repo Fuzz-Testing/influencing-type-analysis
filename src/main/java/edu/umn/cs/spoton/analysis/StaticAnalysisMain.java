@@ -70,8 +70,6 @@ public class StaticAnalysisMain {
 
   public static void main(String[] args)
       throws SpotOnException, ClassHierarchyException, CallGraphBuilderCancelException, IOException {
-    assert args.length
-        == 1 : "must supply the value for computing influencing types in the analysis. failing";
     StaticAnalysisMain staticAnalysisMain = new StaticAnalysisMain(args);
     staticAnalysisMain.run();
     staticAnalysisMain.dumpOutput();
@@ -126,11 +124,20 @@ public class StaticAnalysisMain {
         + "fakeMain"
         + "outputDir";
     computeInfluencingTypes = Boolean.parseBoolean(args[0]);
-    dependencyPackage = args[1];
-    dependencyEntryClass = args[2];
+    dependencyPackage = args[1].replaceAll("\\.","/");
+    dependencyEntryClass = args[2].replaceAll("\\.","/");
     jarClasspath = args[3];
     analysisMainMethod = args[4];
     outputDir = new File(args[5] + "/analysisOutput");
+
+    System.out.println("printing passed parameters");
+    System.out.println("args = " + Arrays.toString(args));
+    System.out.println("computeInfluencingTypes = " + computeInfluencingTypes);
+    System.out.println("dependencyPackage = " + dependencyPackage);
+    System.out.println("dependencyEntryClass = " + dependencyEntryClass);
+    System.out.println("jarClasspath =" + jarClasspath);
+    System.out.println("analysisMainMethod =" + analysisMainMethod);
+    System.out.println("outputDir =" + outputDir);
   }
 
   /**
