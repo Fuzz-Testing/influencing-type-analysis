@@ -29,6 +29,12 @@ public class SourceCodePoint {
     this.sourceCodeIndex = sourceCodeIndex;
   }
 
+  public SourceCodePoint(String scpStr) {
+    int indexLocation = scpStr.lastIndexOf("_L");
+    this.sourceCodeIndex = Integer.parseInt(scpStr.substring(indexLocation + 2));
+    this.methodSignature = scpStr.substring(scpStr.lastIndexOf(".") + 1, indexLocation);
+    this.fullClassName = scpStr.substring(0, scpStr.lastIndexOf("."));
+  }
 
   @Override
   public String toString() {
