@@ -32,7 +32,7 @@ public class InfluencingTest {
         classpath, "lambda").get(0);
     SourceCodePoint expectedSourceCodePoint = new SourceCodePoint(
         "Llambda/dynamodb/ContractsDynamoDBQuery", "convert(Ljava/util/Iterator;)Ljava/util/List;",
-        45);
+        45,-1);
     Map<String, Integer> dependentTypes = typeMap.get(expectedSourceCodePoint);
     assert dependentTypes != null;
     assert dependentTypes.toString().contains("document/Item");
@@ -56,7 +56,7 @@ public class InfluencingTest {
         classpath, "lambda").get(0);
     SourceCodePoint expectedSourceCodePoint = new SourceCodePoint(
         "Llambda/dependency/DependencyTestingClass",
-        "inUserPackageNotVisited(Ljava/lang/String;Ljava/util/Date;)Ljava/lang/Integer;", 18);
+        "inUserPackageNotVisited(Ljava/lang/String;Ljava/util/Date;)Ljava/lang/Integer;", 18,-1);
     Map<String, Integer> dependentTypes = typeMap.get(expectedSourceCodePoint);
     assert dependentTypes != null;
     assert dependentTypes.toString().contains("Llambda/dependency/B");
@@ -75,7 +75,7 @@ public class InfluencingTest {
         classpath, "lambda").get(0);
     SourceCodePoint expectedSourceCodePoint = new SourceCodePoint("Llambda/ContractDynamodbHandler",
                                                                   "nestedGetsofS3(Lcom/amazonaws/services/lambda/runtime/events/S3Event;Ljava/lang/Object;)V",
-                                                                  112);
+                                                                  112,-1);
     Map<String, Integer> dependentTypes = typeMap.get(expectedSourceCodePoint);
     assert dependentTypes != null;
     assert dependentTypes.toString().contains(
@@ -100,7 +100,7 @@ public class InfluencingTest {
         classpath, "lambda").get(0);
     SourceCodePoint expectedSourceCodePoint = new SourceCodePoint("Llambda/ContractDynamodbHandler",
                                                                   "dummyCheckItemExists(Ljava/lang/String;)Z",
-                                                                  101);
+                                                                  101,-1);
     Map<String, Integer> dependentTypes = typeMap.get(expectedSourceCodePoint);
     assert dependentTypes != null;
     assert dependentTypes.toString().contains("Lcom/amazonaws/services/dynamodbv2/document/Table");
@@ -129,7 +129,7 @@ public class InfluencingTest {
     SourceCodePoint expectedSourceCodePoint = new SourceCodePoint(
         "Lnfbbreastfeedings3lambda/LambdaFunctionHandler",
         "handleRequest(Lcom/amazonaws/services/lambda/runtime/events/S3Event;Lcom/amazonaws/services/lambda/runtime/Context;)Ljava/lang/String;",
-        34);
+        34,-1);
     Map<String, Integer> dependentTypes = typeMap.get(expectedSourceCodePoint);
     assert dependentTypes != null;
     assert dependentTypes.toString().contains(
@@ -160,7 +160,7 @@ public class InfluencingTest {
     SourceCodePoint expectedSourceCodePoint = new SourceCodePoint(
         "Lde/dengpeng/projects/LambdaFunctionHandler",
         "handleRequest(Lcom/amazonaws/services/lambda/runtime/events/S3Event;Lcom/amazonaws/services/lambda/runtime/Context;)Lde/dengpeng/projects/Report;",
-        73);
+        73,-1);
     Map<String, Integer> dependentTypes = typeMap.get(expectedSourceCodePoint);
     assert dependentTypes != null;
     assert dependentTypes.toString().contains("Lau/com/bytecode/opencsv/CSVReader");
