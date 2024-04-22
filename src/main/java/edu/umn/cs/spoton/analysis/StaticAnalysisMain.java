@@ -3,9 +3,9 @@ package edu.umn.cs.spoton.analysis;
 import com.ibm.wala.ipa.callgraph.CallGraphBuilderCancelException;
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import edu.umn.cs.spoton.IOUtil;
-import edu.umn.cs.spoton.SpotOnException;
+import edu.umn.cs.spoton.StaticAnalysisException;
 import edu.umn.cs.spoton.analysis.influencing.GraphsConstruction;
-import edu.umn.cs.spoton.analysis.influencing.SourceCodePoint;
+import edu.umn.cs.spoton.analysis.influencing.CodeTarget;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,16 +60,16 @@ public class StaticAnalysisMain {
   File stringConstantsFile;
 
   /*
-  main datastructure carrying the influencing types of sourcecode points
+  main datastructure carrying the influencing types of codeTarget points
    */
-  static HashMap<SourceCodePoint, Map<String, Integer>> sourcePointsToTypesMap = new HashMap<>();
+  static HashMap<CodeTarget, Map<String, Integer>> sourcePointsToTypesMap = new HashMap<>();
   /**
    * main datastructure carrying the string constants.
    */
   public static HashSet<String> stringTable = new HashSet<String>();
 
   public static void main(String[] args)
-      throws SpotOnException, ClassHierarchyException, CallGraphBuilderCancelException, IOException {
+      throws StaticAnalysisException, ClassHierarchyException, CallGraphBuilderCancelException, IOException {
     StaticAnalysisMain staticAnalysisMain = new StaticAnalysisMain(args);
     staticAnalysisMain.run();
     staticAnalysisMain.dumpOutput();
@@ -78,7 +78,7 @@ public class StaticAnalysisMain {
   private void dumpOutput() throws IOException {
     for (String constStr : stringTable)
       IOUtil.appendLineToFile(stringConstantsFile, constStr);
-    ArrayList<Entry<SourceCodePoint, Map<String, Integer>>> scpEntries = new ArrayList<>(
+    ArrayList<Entry<CodeTarget, Map<String, Integer>>> scpEntries = new ArrayList<>(
         sourcePointsToTypesMap.entrySet());
     System.out.println("about to print scpEntries");
     System.out.println("outputDir = " + outputDir);
@@ -90,16 +90,16 @@ public class StaticAnalysisMain {
   }
 
   /**
-   * dumps for every sourceCodePoint a file with the information about its influencing types.
+   * dumps for every codeTargetPoint a file with the information about its influencing types.
    *
-   * @param sourceCodePointMapEntry
+   * @param codeTargetPointMapEntry
    * @param singleScpInfoFile
    */
-  private void dumpScpToFile(Entry<SourceCodePoint, Map<String, Integer>> sourceCodePointMapEntry,
+  private void dumpScpToFile(Entry<CodeTarget, Map<String, Integer>> codeTargetPointMapEntry,
       File singleScpInfoFile)
       throws IOException {
-    SourceCodePoint scp = sourceCodePointMapEntry.getKey();
-    Map<String, Integer> typesMap = sourceCodePointMapEntry.getValue();
+    CodeTarget scp = codeTargetPointMapEntry.getKey();
+    Map<String, Integer> typesMap = codeTargetPointMapEntry.getValue();
     IOUtil.appendLineToFile(singleScpInfoFile, scp.toString());
     for (Map.Entry typeEntry : typesMap.entrySet())
       IOUtil.appendLineToFile(singleScpInfoFile, typeEntry.toString());
@@ -108,11 +108,11 @@ public class StaticAnalysisMain {
   public StaticAnalysisMain(String[] args) throws IOException {
     parseInput(args);
     stringConstantsFile = new File(outputDir, "StrConstants.txt");
-//    sourceCodePointsInfoDir = new File(outputDir, "SourceCodePointsInfo");
+//    codeTargetPointsInfoDir = new File(outputDir, "codeTargetPointsInfo");
     if (outputDir.exists()) {}
     IOUtil.deleteFile(outputDir);
     IOUtil.createDirectory(outputDir);
-//    sourceCodePointsInfoDir.mkdirs();
+//    codeTargetPointsInfoDir.mkdirs();
   }
 
   private void parseInput(String[] args) {
@@ -145,7 +145,7 @@ public class StaticAnalysisMain {
    * on, and the constant string table.
    **/
   public void run()
-      throws ClassHierarchyException, CallGraphBuilderCancelException, SpotOnException, IOException {
+      throws ClassHierarchyException, CallGraphBuilderCancelException, StaticAnalysisException, IOException {
     GraphsConstruction graphsConstruction = new GraphsConstruction(computeInfluencingTypes);
     List<Object> result = graphsConstruction.runAnalysisPasses(
         dependencyEntryClass,
@@ -154,9 +154,9 @@ public class StaticAnalysisMain {
 
     assert result.size() == 2 && result.get(0) instanceof HashMap && result.get(
         1) instanceof HashSet : "Assumptions of the static analysis are voilated.";
-    sourcePointsToTypesMap = (HashMap<SourceCodePoint, Map<String, Integer>>) result.get(0);
+    sourcePointsToTypesMap = (HashMap<CodeTarget, Map<String, Integer>>) result.get(0);
     stringTable = (HashSet<String>) result.get(1);
-    System.out.println("printing sourceCodePointsToTypesMap");
+    System.out.println("printing codeTargetPointsToTypesMap");
     System.out.println(sourcePointsToTypesMap);
     System.out.println("printing stringTable");
     System.out.println(stringTable);

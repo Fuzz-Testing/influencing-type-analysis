@@ -3,41 +3,41 @@ package edu.umn.cs.spoton.analysis.influencing;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ssa.SSAInstruction;
 
-public class SourceCodePoint {
+public class CodeTarget {
 
   String fullClassName;
   String methodSignature;
 //  SSAInstruction instruction;
 
-  int sourceCodeIndex;
+  int codeTargetIndex;
 
   int bytecodeIndex;
 
   int iid;
 
-  public SourceCodePoint(IMethod method, SSAInstruction instruction) {
+  public CodeTarget(IMethod method, SSAInstruction instruction) {
     String[] splittedSignature = TypeUtil.getSplittedSignature(method);
-    assert splittedSignature.length == 2 : "unexpected method signature for sourcecode point.";
+    assert splittedSignature.length == 2 : "unexpected method signature for codeTarget point.";
     fullClassName = splittedSignature[0];
     methodSignature = splittedSignature[1];
 //    this.instruction = instruction;
-    this.sourceCodeIndex = TypeUtil.getWalaSourceLineNum(method, instruction);
+    this.codeTargetIndex = TypeUtil.getWalaSourceLineNum(method, instruction);
     this.bytecodeIndex = TypeUtil.getWalaByteInstLineNum(method, instruction);
     this.iid = -1;
   }
 
-  public SourceCodePoint(String fullClassName, String methodSignature, int sourceCodeIndex,
+  public CodeTarget(String fullClassName, String methodSignature, int codeTargetIndex,
       int iid) {
     this.fullClassName = fullClassName;
     this.methodSignature = methodSignature;
-    this.sourceCodeIndex = sourceCodeIndex;
+    this.codeTargetIndex = codeTargetIndex;
     this.iid = iid;
   }
 
-  public SourceCodePoint(String scpStr) {
+  public CodeTarget(String scpStr) {
     scpStr = scpStr.substring(0, scpStr.lastIndexOf("_"));
     int indexLocation = scpStr.lastIndexOf("_L");
-    this.sourceCodeIndex = Integer.parseInt(scpStr.substring(indexLocation + 2));
+    this.codeTargetIndex = Integer.parseInt(scpStr.substring(indexLocation + 2));
     this.methodSignature = scpStr.substring(scpStr.lastIndexOf(".") + 1, indexLocation);
     this.fullClassName = scpStr.substring(0, scpStr.lastIndexOf("."));
     this.iid = -1;
@@ -49,13 +49,13 @@ public class SourceCodePoint {
 
   public String noIidToString() {
 
-    return fullClassName + "." + methodSignature + "_L" + sourceCodeIndex;
+    return fullClassName + "." + methodSignature + "_L" + codeTargetIndex;
   }
 
   @Override
   public String toString() {
 
-    return fullClassName + "." + methodSignature + "_L" + sourceCodeIndex + "_" + iid;
+    return fullClassName + "." + methodSignature + "_L" + codeTargetIndex + "_" + iid;
   }
 
   @Override
@@ -65,7 +65,7 @@ public class SourceCodePoint {
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof SourceCodePoint))
+    if (!(obj instanceof CodeTarget))
       return false;
 
     return toString().equals(obj.toString());

@@ -9,7 +9,7 @@ import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.SSAReturnInstruction;
 import com.ibm.wala.types.TypeReference;
 import edu.umn.cs.spoton.analysis.influencing.ConditionInfluencingTypeVisitor;
-import edu.umn.cs.spoton.analysis.influencing.SourceCodePoint;
+import edu.umn.cs.spoton.analysis.influencing.CodeTarget;
 import edu.umn.cs.spoton.analysis.influencing.VarTypeVisitor;
 import edu.umn.cs.spoton.analysis.influencing.UniqueVar;
 import edu.umn.cs.spoton.analysis.string.StringConstantsVisitor;
@@ -137,16 +137,16 @@ public class AnalysisPasses {
    */
   public static List<Object> start(IMethod m, IAnalysisCacheView cache,
       IClassHierarchy cha, String rootPackageName, CallGraph cg, boolean computeInfluencingTypes) {
-    HashMap<SourceCodePoint, Map<String, Integer>> sourceCodeToTypeDependencyMap = new HashMap<>();
+    HashMap<CodeTarget, Map<String, Integer>> codeTargetToTypeDependencyMap = new HashMap<>();
     if (computeInfluencingTypes)
-      sourceCodeToTypeDependencyMap = runInfluencingTypesPass(m, cache, cha, cg, rootPackageName);
+      codeTargetToTypeDependencyMap = runInfluencingTypesPass(m, cache, cha, cg, rootPackageName);
 
     LinkedHashSet<String> stringConstantTable = runStringConstantsPass(m, cache, cha, cg,
                                                                        rootPackageName);
 
     uniqueVarHashSet=new HashSet<>();
     dependencyMap = new LinkedHashMap<>();
-    return Arrays.asList(sourceCodeToTypeDependencyMap, stringConstantTable);
+    return Arrays.asList(codeTargetToTypeDependencyMap, stringConstantTable);
   }
 
   private static LinkedHashSet<String> runStringConstantsPass(IMethod m, IAnalysisCacheView cache,
@@ -161,7 +161,7 @@ public class AnalysisPasses {
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
-  private static HashMap<SourceCodePoint, Map<String, Integer>> runInfluencingTypesPass(IMethod m,
+  private static HashMap<CodeTarget, Map<String, Integer>> runInfluencingTypesPass(IMethod m,
       IAnalysisCacheView cache,
       IClassHierarchy cha, CallGraph cg, String rootPackageName) {
     //    computes dependencies between variables.
@@ -171,20 +171,20 @@ public class AnalysisPasses {
     typeDependencyWalker.walk();
     typeDependencyWalker.clear();
 
-//    computes the dependent types for conditions, has the side effect of populating the sourceCodeToTypeDependencyMap
+//    computes the dependent types for conditions, has the side effect of populating the codeTargetToTypeDependencyMap
     ConditionInfluencingTypeVisitor inferConditionTypeDependencyWalker = new ConditionInfluencingTypeVisitor(
         m, dependencyMap, cache, cha, rootPackageName, cg);
-    HashMap<SourceCodePoint, Map<String, Integer>> sourceCodeToTypeDependencyMap = inferConditionTypeDependencyWalker.walk();
+    HashMap<CodeTarget, Map<String, Integer>> codeTargetToTypeDependencyMap = inferConditionTypeDependencyWalker.walk();
     ConditionInfluencingTypeVisitor.clear();
     System.out.println("PRINTING FINAL MAP");
     StringBuilder finalScpToTypeDepMap = new StringBuilder();
-    sourceCodeToTypeDependencyMap.forEach(
+    codeTargetToTypeDependencyMap.forEach(
         (key, val) -> {
           finalScpToTypeDepMap.append(key).append("->").append(val).append("\n");
         });
     System.out.println(finalScpToTypeDepMap);
     dependencyMap = new LinkedHashMap<>();
-    return sourceCodeToTypeDependencyMap;
+    return codeTargetToTypeDependencyMap;
   }
 
   /**

@@ -23,7 +23,7 @@ import com.ibm.wala.ipa.cha.ClassHierarchyFactory;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.util.io.CommandLine;
-import edu.umn.cs.spoton.SpotOnException;
+import edu.umn.cs.spoton.StaticAnalysisException;
 import edu.umn.cs.spoton.analysis.AnalysisPasses;
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class GraphsConstruction {
 
 
   public static void main(String[] args)
-      throws IOException, ClassHierarchyException, IllegalArgumentException, CallGraphBuilderCancelException, SpotOnException {
+      throws IOException, ClassHierarchyException, IllegalArgumentException, CallGraphBuilderCancelException, StaticAnalysisException {
 
     Properties p = CommandLine.parse(args);
     String entryClass = p.getProperty("entryClass");
@@ -70,7 +70,7 @@ public class GraphsConstruction {
 
   public List<Object> runAnalysisPasses(String entryClass, String entryMethod,
       String classpath, String rootPackageName)
-      throws IOException, ClassHierarchyException, CallGraphBuilderCancelException, SpotOnException {
+      throws IOException, ClassHierarchyException, CallGraphBuilderCancelException, StaticAnalysisException {
     Instant beforeDate = Instant.now();
     IMethod m = prepareGraphs(entryClass, entryMethod, classpath, rootPackageName);
 //    run analysis pass, whether we want to run the influencingTypes dependency or just the StringConstants pass.
@@ -84,7 +84,7 @@ public class GraphsConstruction {
 
   public IMethod prepareGraphs(String entryClass, String entryMethod,
       String classpath, String rootPackageName)
-      throws ClassHierarchyException, IOException, CallGraphBuilderCancelException, SpotOnException {
+      throws ClassHierarchyException, IOException, CallGraphBuilderCancelException, StaticAnalysisException {
 
     long start = System.currentTimeMillis();
     this.rootPackageName = rootPackageName;

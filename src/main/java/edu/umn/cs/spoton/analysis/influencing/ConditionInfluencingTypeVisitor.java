@@ -33,7 +33,7 @@ public class ConditionInfluencingTypeVisitor extends SSAInstruction.Visitor {
 
   private final LinkedHashMap<UniqueVar, List<UniqueVar>> dependencyMap;
 
-  static HashMap<SourceCodePoint, Map<String, Integer>> sourceCodeToTypeDependencyMap = new HashMap<>();
+  static HashMap<CodeTarget, Map<String, Integer>> codeTargetToTypeDependencyMap = new HashMap<>();
   static HashSet<String> visitedClassesMethod = new HashSet<>();
   private CallGraph cg;
 
@@ -178,20 +178,20 @@ public class ConditionInfluencingTypeVisitor extends SSAInstruction.Visitor {
       nextUniqueVarQueue = new LinkedList<>();
     }
 
-    SourceCodePoint sourceCodePoint = new SourceCodePoint(method, instruction);
+    CodeTarget codeTarget = new CodeTarget(method, instruction);
 
-    System.out.println("for SourceCodePoint = " + sourceCodePoint);
-    Map<String, Integer> lineOfCodeTypeDependencies = sourceCodeToTypeDependencyMap.getOrDefault(
-        sourceCodePoint, new LinkedHashMap<>());
+    System.out.println("for codeTargetPoint = " + codeTarget);
+    Map<String, Integer> lineOfCodeTypeDependencies = codeTargetToTypeDependencyMap.getOrDefault(
+        codeTarget, new LinkedHashMap<>());
 
     LinkedHashMap<String, Integer> filteredTypesToDepthMap = filterDependentTypes(
         dependentTypeToDepthMap);
-    if (filteredTypesToDepthMap.isEmpty()) //skip adding a sourceCodePoint that has no useful type
+    if (filteredTypesToDepthMap.isEmpty()) //skip adding a codeTargetPoint that has no useful type
       return;
 
     lineOfCodeTypeDependencies.putAll(filteredTypesToDepthMap);
 
-    sourceCodeToTypeDependencyMap.put(sourceCodePoint,
+    codeTargetToTypeDependencyMap.put(codeTarget,
                                       lineOfCodeTypeDependencies);
   }
 
@@ -217,7 +217,7 @@ public class ConditionInfluencingTypeVisitor extends SSAInstruction.Visitor {
     return filteredType;
   }
 
-  public HashMap<SourceCodePoint, Map<String, Integer>> walk() {
+  public HashMap<CodeTarget, Map<String, Integer>> walk() {
     SSAInstruction[] instructions = ir.getInstructions();
 
     for (int irInstIndex = 0; irInstIndex < instructions.length; irInstIndex++) {
@@ -226,7 +226,7 @@ public class ConditionInfluencingTypeVisitor extends SSAInstruction.Visitor {
         ins.visit(this);
       }
     }
-    return sourceCodeToTypeDependencyMap;
+    return codeTargetToTypeDependencyMap;
   }
 
   public static void clear() {
