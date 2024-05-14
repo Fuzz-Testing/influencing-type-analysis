@@ -255,7 +255,7 @@ public class VarTypeVisitor extends SSAInstruction.Visitor {
 
     if (!isVoidMethod) //add dependency of the def based on the return type defined by the signature of the method
       AnalysisPasses.addDependencyToDummy(returnValUniqueVar);
-    else if ((instruction.isSpecial() || instruction.isDispatch())
+    if ((instruction.isSpecial() || instruction.isDispatch())
         && !instruction.isStatic()) { //dealing with the case where we want to use the object reference for the invocation, and make it depends on the parameters passed if any
       parameterUniqueVars = getUseUniqueVars(instruction,
                                              IntStream.range(1,
