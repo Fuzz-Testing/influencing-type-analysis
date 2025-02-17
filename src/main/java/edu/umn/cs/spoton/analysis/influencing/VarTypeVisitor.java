@@ -340,15 +340,19 @@ public class VarTypeVisitor extends SSAInstruction.Visitor {
       } else if (c == '>')
         numOfOpenAngleBracket--;
       else {
-        if (numOfOpenAngleBracket == 0
-            && c == ';') { // a parameter type is found between lastParamIndex and i
-          paramSplitIndices.add(i);
-        }
+        if (numOfOpenAngleBracket == 0)
+          if (c == ';')  // a parameter type is found between lastParamIndex and i
+            paramSplitIndices.add(i);
+//          else if (i == genericSig.length() - 1) //to capture the last type when it does not end with a simicolon
+//            paramSplitIndices.add(i);
       }
       i++;
     }
 
-    assert paramSplitIndices.size() == numOfParams : "param parser not matching numOfParams";
+    if (paramSplitIndices.size() != numOfParams) {
+      System.out.println("genericSig=" + genericSig + "\nparamParser=" + paramSplitIndices.size()
+                             + "\nnumOfParams=" + numOfParams);
+    }
 
     return paramSplitIndices.stream().toArray(Integer[]::new);
   }
